@@ -98,6 +98,33 @@ install_lazyvim() {
   echo "LazyVim starter installed"
 }
 
+install_tree_sitter_cli() {
+  # LazyVim's treesitter build hook races with Mason when tree-sitter-cli
+  # isn't already on PATH. Pre-install it so `ensure_treesitter_cli`
+  # short-circuits and never calls Mason.
+  if command -v tree-sitter &>/dev/null; then
+    echo "tree-sitter CLI already installed: $(tree-sitter --version)"
+    return
+  fi
+
+  local arch
+  case "$(uname -m)" in
+  x86_64) arch="x64" ;;
+  aarch64 | arm64) arch="arm64" ;;
+  *)
+    echo "Unsupported arch for tree-sitter CLI prebuilt: $(uname -m) — skipping"
+    return
+    ;;
+  esac
+
+  local url="https://github.com/tree-sitter/tree-sitter/releases/latest/download/tree-sitter-linux-${arch}.gz"
+  curl -sL "$url" -o /tmp/tree-sitter.gz
+  gunzip -f /tmp/tree-sitter.gz
+  chmod +x /tmp/tree-sitter
+  sudo mv /tmp/tree-sitter /usr/local/bin/tree-sitter
+  echo "tree-sitter CLI installed: $(tree-sitter --version)"
+}
+
 install_lazyvim_plugins() {
   echo "Installing LazyVim plugins (headless)..."
   nvim --headless "+Lazy! sync" +qa
@@ -106,6 +133,7 @@ install_lazyvim_plugins() {
 
 echo "Setting up LazyVim..."
 install_lazyvim
+install_tree_sitter_cli
 install_lazyvim_plugins
 
 # ===========================================
