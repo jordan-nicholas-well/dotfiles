@@ -30,17 +30,17 @@ echo "Detected package manager: $PM"
 install_system_deps() {
   case "$PM" in
   dnf)
-    sudo dnf install -y curl tar fontconfig git gcc ripgrep
+    sudo dnf install -y curl tar fontconfig git gcc ripgrep gh
     ;;
   apt)
     sudo apt-get update
-    sudo apt-get install -y curl tar fontconfig git gcc ripgrep
+    sudo apt-get install -y curl tar fontconfig git gcc ripgrep gh
     ;;
   pacman)
-    sudo pacman -Sy --noconfirm curl tar fontconfig git gcc ripgrep
+    sudo pacman -Sy --noconfirm curl tar fontconfig git gcc ripgrep github-cli
     ;;
   brew)
-    brew install curl git gcc ripgrep
+    brew install curl git gcc ripgrep gh
     ;;
   esac
 }
@@ -125,6 +125,27 @@ install_tree_sitter_cli() {
   echo "tree-sitter CLI installed: $(tree-sitter --version)"
 }
 
+install_octo_plugin_spec() {
+  local plugins_dir="$HOME/.config/nvim/lua/plugins"
+  mkdir -p "$plugins_dir"
+  cat >"$plugins_dir/octo.lua" <<'LUA'
+return {
+  {
+    "pwntester/octo.nvim",
+    dependencies = {
+      "nvim-lua/plenary.nvim",
+      "nvim-tree/nvim-web-devicons",
+    },
+    cmd = "Octo",
+    opts = {
+      picker = "snacks",
+    },
+  },
+}
+LUA
+  echo "Wrote octo.nvim plugin spec to $plugins_dir/octo.lua"
+}
+
 install_lazyvim_plugins() {
   echo "Installing LazyVim plugins (headless)..."
   nvim --headless "+Lazy! sync" +qa
@@ -134,6 +155,7 @@ install_lazyvim_plugins() {
 echo "Setting up LazyVim..."
 install_lazyvim
 install_tree_sitter_cli
+install_octo_plugin_spec
 install_lazyvim_plugins
 
 # ===========================================
