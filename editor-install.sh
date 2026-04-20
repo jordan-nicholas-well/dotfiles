@@ -142,6 +142,7 @@ return {
     cmd = "Octo",
     opts = {
       picker = "snacks",
+      use_local_fs = true,
     },
   },
 }
