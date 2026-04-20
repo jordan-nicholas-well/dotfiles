@@ -117,7 +117,10 @@ install_tree_sitter_cli() {
     ;;
   esac
 
-  local url="https://github.com/tree-sitter/tree-sitter/releases/latest/download/tree-sitter-linux-${arch}.gz"
+  # Pinned: v0.26.x is built against glibc 2.39, which breaks on Ubuntu 22.04
+  # (glibc 2.35) devcontainers. v0.25.10 is the last release built for glibc 2.34.
+  local version="v0.25.10"
+  local url="https://github.com/tree-sitter/tree-sitter/releases/download/${version}/tree-sitter-linux-${arch}.gz"
   curl -sL "$url" -o /tmp/tree-sitter.gz
   gunzip -f /tmp/tree-sitter.gz
   chmod +x /tmp/tree-sitter
