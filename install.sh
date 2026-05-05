@@ -25,8 +25,8 @@ fi
 gh auth setup-git
 
 # configure git name / email
-git config --global user.name "Benjamin Benetti"
-git config --global user.email "ben@bbenetti.ca"
+git config --global user.name "Jordan Nicholas"
+git config --global user.email "jordan.nicholas@awaremd.com"
 
 # Install editor
 ./editor-install.sh
