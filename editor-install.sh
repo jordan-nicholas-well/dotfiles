@@ -198,6 +198,35 @@ echo "Installing lazygit..."
 install_lazygit
 
 # ===========================================
+# lazydocker
+# ===========================================
+
+install_lazydocker() {
+  if command -v lazydocker &>/dev/null; then
+    echo "lazydocker already installed: $(lazydocker --version | grep -oP 'Version:\s*\K.+')"
+    return
+  fi
+
+  case "$PM" in
+  brew)
+    brew install lazydocker
+    ;;
+  *)
+    # lazydocker isn't reliably packaged in dnf/apt/pacman repos — use the tarball
+    local version
+    version=$(curl -s https://api.github.com/repos/jesseduffield/lazydocker/releases/latest | grep -Po '"tag_name": "v\K[^"]*')
+    curl -sL "https://github.com/jesseduffield/lazydocker/releases/download/v${version}/lazydocker_${version}_Linux_x86_64.tar.gz" -o /tmp/lazydocker.tar.gz
+    sudo tar xzf /tmp/lazydocker.tar.gz -C /usr/local/bin lazydocker
+    rm /tmp/lazydocker.tar.gz
+    ;;
+  esac
+  echo "lazydocker installed"
+}
+
+echo "Installing lazydocker..."
+install_lazydocker
+
+# ===========================================
 # JetBrainsMono Nerd Font
 # ===========================================
 
