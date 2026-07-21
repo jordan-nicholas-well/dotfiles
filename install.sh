@@ -28,6 +28,11 @@ gh auth setup-git
 git config --global user.name "Jordan Nicholas"
 git config --global user.email "jordan.nicholas@awaremd.com"
 
+# Link Claude Code global config
+SCRIPT_DIR="$(cd "$(dirname "${BASH_SOURCE[0]}")" && pwd)"
+mkdir -p "$HOME/.claude"
+ln -sf "$SCRIPT_DIR/claude/CLAUDE.md" "$HOME/.claude/CLAUDE.md"
+
 # Install editor
 ./editor-install.sh
 
